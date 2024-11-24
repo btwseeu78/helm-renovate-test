@@ -9,11 +9,13 @@ jobs:
         steps:
         - name: Checkout code
           uses: actions/checkout@v2
-    
+        
         - name: Check for changes in Chart.yaml
           id: check_changes
           run: |
-            if git diff --exit-code HEAD^ HEAD -- Chart.yaml; then
+            PREV_SHA=${{ github.event.before }}
+            CURR_SHA=${{ github.sha }}
+            if git diff --exit-code $PREV_SHA $CURR_SHA -- Chart.yaml; then
                 echo "No changes in Chart.yaml"
                 echo "changes=false" >> $GITHUB_ENV
             else
